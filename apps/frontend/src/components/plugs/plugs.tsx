@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation';
 import { useToaster } from '@gitroom/react/toaster/toaster';
 import { PlugsContext } from '@gitroom/frontend/components/plugs/plugs.context';
 import { Plug } from '@gitroom/frontend/components/plugs/plug';
+import { useDictionary } from '../layout/lang.context';
 
 export const Plugs = () => {
   const fetch = useFetch();
@@ -74,7 +75,7 @@ export const Plugs = () => {
   if (isLoading || plugLoading) {
     return null;
   }
-
+  const dictionary = useDictionary("launches");
   if (!sortedIntegrations.length && !isLoading) {
     return (
       <div className="flex flex-col items-center mt-[100px] gap-[27px] text-center">
@@ -82,12 +83,12 @@ export const Plugs = () => {
           <img src="/peoplemarketplace.svg" />
         </div>
         <div className="text-[48px]">
-          There are not plugs matching your channels
+          {dictionary["There are not plugs matching your channels"]}
           <br />
-          You have to add: X or LinkedIn or Threads
+          {dictionary["You have to add: X or LinkedIn or Threads"]}
         </div>
         <Button onClick={() => router.push('/launches')}>
-          Go to the calendar to add channels
+          {dictionary["Go to the calendar to add channels"]}
         </Button>
       </div>
     );

@@ -16,6 +16,7 @@ import { useToaster } from '@gitroom/react/toaster/toaster';
 import { deleteDialog } from '@gitroom/react/helpers/delete.dialog';
 import copy from 'copy-to-clipboard';
 import interClass from '@gitroom/react/helpers/inter.font';
+import { useDictionary } from '../layout/lang.context';
 
 const roles = [
   {
@@ -184,12 +185,13 @@ export const TeamsComponent = () => {
     []
   );
 
+  const dictionary = useDictionary("launches");
   return (
     <div className="flex flex-col">
-      <h2 className="text-[24px] mb-[24px]">Team Members</h2>
-      <h3 className="text-[20px]">Account Managers</h3>
+      <h2 className="text-[24px] mb-[24px]">{dictionary["Team Members"]}</h2>
+      <h3 className="text-[20px]">{dictionary["Account Managers"]}</h3>
       <div className="text-customColor18 mt-[4px]">
-        Invite your assistant or team member to manage your account
+        {dictionary["Invite your assistant or team member to manage your account"]}
       </div>
       <div className="my-[16px] mt-[16px] bg-sixth border-fifth border rounded-[4px] p-[24px] flex flex-col gap-[24px]">
         <div className="flex flex-col gap-[16px]">
@@ -239,7 +241,7 @@ export const TeamsComponent = () => {
         </div>
         <div>
           <Button className="rounded-[4px]" onClick={addMember}>
-            Add another member
+            {dictionary["Add Another Member"]}
           </Button>
         </div>
       </div>

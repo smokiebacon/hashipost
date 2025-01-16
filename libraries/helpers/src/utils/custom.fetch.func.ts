@@ -11,7 +11,8 @@ export interface Params {
 export const customFetch = (
   params: Params,
   auth?: string,
-  showorg?: string
+  showorg?: string,
+  lang?: string
 ) => {
   return async function newFetch(url: string, options: RequestInit = {}) {
     const newRequestObject = await params?.beforeRequest?.(url, options);
@@ -24,7 +25,9 @@ export const customFetch = (
         ...(options.body instanceof FormData
           ? {}
           : { 'Content-Type': 'application/json' }),
+          // 'lang' : 
         Accept: 'application/json',
+        "lang" : lang || "en",
         ...options?.headers,
       },
       // @ts-ignore

@@ -4,6 +4,7 @@ import { useModals } from '@mantine/modals';
 import dayjs from 'dayjs';
 import { useCalendar } from '@gitroom/frontend/components/launches/calendar.context';
 import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
+import { useDictionary } from '../layout/lang.context';
 
 export const NewPost = () => {
   const fetch = useFetch();
@@ -32,6 +33,7 @@ export const NewPost = () => {
       title: ``,
     });
   }, [integrations]);
+  const dictionary = useDictionary("launches");
 
   return (
     <button
@@ -50,7 +52,7 @@ export const NewPost = () => {
           fill="white"
         />
       </svg>
-      <div className="flex-1 text-left">Create New Post</div>
+      <div className="flex-1 text-left">{dictionary["Create New Post"]}</div>
     </button>
   );
 };

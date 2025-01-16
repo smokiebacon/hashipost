@@ -39,6 +39,7 @@ const ModeComponent = dynamic(
 import { extend } from 'dayjs';
 import { useSearchParams } from 'next/navigation';
 import { CheckPayment } from '@gitroom/frontend/components/layout/check.payment';
+import LanguageComponent from '@gitroom/frontend/components/language/language.component';
 
 extend(utc);
 extend(weekOfYear);
@@ -144,6 +145,7 @@ export const LayoutSettings = ({ children }: { children: ReactNode }) => {
                 <ModeComponent />
                 <SettingsComponent />
                 <NotificationComponent />
+                <LanguageComponent />
                 <OrganizationSelector />
               </div>
             </nav>

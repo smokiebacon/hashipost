@@ -11,8 +11,10 @@ export interface IAuthenticator {
       code: string;
       codeVerifier: string;
       refresh?: string;
+      lang?: string,
     },
-    clientInformation?: ClientInformation
+    clientInformation?: ClientInformation,
+    
   ): Promise<AuthTokenDetails | string>;
   refreshToken(refreshToken: string): Promise<AuthTokenDetails>;
   reConnect?(
@@ -21,7 +23,8 @@ export interface IAuthenticator {
     accessToken: string
   ): Promise<AuthTokenDetails>;
   generateAuthUrl(
-    clientInformation?: ClientInformation
+    clientInformation?: ClientInformation,
+    lang?: string
   ): Promise<GenerateAuthUrlResponse>;
   analytics?(
     id: string,

@@ -49,13 +49,13 @@ export class DiscordProvider extends SocialAbstract implements SocialProvider {
       username: '',
     };
   }
-  async generateAuthUrl() {
+  async generateAuthUrl(_: any,  lang: string) {
     const state = makeId(6);
     return {
       url: `https://discord.com/oauth2/authorize?client_id=${
         process.env.DISCORD_CLIENT_ID
       }&permissions=377957124096&response_type=code&redirect_uri=${encodeURIComponent(
-        `${process.env.FRONTEND_URL}/integrations/social/discord`
+        `${process.env.FRONTEND_URL}/${lang}/integrations/social/discord`
       )}&integration_type=0&scope=bot+identify+guilds&state=${state}`,
       codeVerifier: makeId(10),
       state,
@@ -66,6 +66,7 @@ export class DiscordProvider extends SocialAbstract implements SocialProvider {
     code: string;
     codeVerifier: string;
     refresh?: string;
+    lang?: string;
   }) {
     const { access_token, expires_in, refresh_token, scope, guild } = await (
       await this.fetch('https://discord.com/api/oauth2/token', {
@@ -73,7 +74,7 @@ export class DiscordProvider extends SocialAbstract implements SocialProvider {
         body: new URLSearchParams({
           code: params.code,
           grant_type: 'authorization_code',
-          redirect_uri: `${process.env.FRONTEND_URL}/integrations/social/discord`,
+          redirect_uri: `${process.env.FRONTEND_URL}/${params?.lang}/integrations/social/discord`,
         }),
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

@@ -1,6 +1,7 @@
 import { Button } from '@gitroom/react/form/button';
 import React, { FC } from 'react';
 import { useCopilotAction, useCopilotReadable } from '@copilotkit/react-core';
+import { useDictionary } from '../layout/lang.context';
 
 export const AddPostButton: FC<{ onClick: () => void; num: number }> = (
   props
@@ -14,6 +15,7 @@ export const AddPostButton: FC<{ onClick: () => void; num: number }> = (
       onClick();
     },
   });
+  const dictionary = useDictionary('launches');
 
   return (
     <Button
@@ -34,7 +36,10 @@ export const AddPostButton: FC<{ onClick: () => void; num: number }> = (
           />
         </svg>
       </div>
-      <div className="text-white">Add comment</div>
+      <div className="text-white">
+        {dictionary['Add comment']}
+        {/* Add comment */}
+        </div>
     </Button>
   );
 };

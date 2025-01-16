@@ -8,16 +8,20 @@ import { FieldValues, FormProvider, useForm } from 'react-hook-form';
 import { Button } from '@gitroom/react/form/button';
 import { classValidatorResolver } from '@hookform/resolvers/class-validator';
 import { ApiKeyDto } from '@gitroom/nestjs-libraries/dtos/integrations/api.key.dto';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { TopTitle } from '@gitroom/frontend/components/launches/helpers/top.title.component';
 import { useVariables } from '@gitroom/react/helpers/variable.context';
 import { useToaster } from '@gitroom/react/toaster/toaster';
 import { object, string } from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useDictionary } from '../layout/lang.context';
+import { languages } from '@gitroom/frontend/app/i18n/settings';
 
 const resolver = classValidatorResolver(ApiKeyDto);
 
 export const useAddProvider = (update?: () => void) => {
+  const dictionary = useDictionary("launches");
+  // console.log('dictionary',dictionary);
   const modal = useModals();
   const fetch = useFetch();
   return useCallback(async () => {
@@ -37,6 +41,7 @@ export const useAddProvider = (update?: () => void) => {
 export const AddProviderButton: FC<{ update?: () => void }> = (props) => {
   const { update } = props;
   const add = useAddProvider(update);
+  const dictionary = useDictionary("launches");
   return (
     <button
       className="text-white p-[8px] rounded-md bg-forth flex gap-[5px]"
@@ -56,7 +61,7 @@ export const AddProviderButton: FC<{ update?: () => void }> = (props) => {
           />
         </svg>
       </div>
-      <div className="flex-1 text-left">Add Channel</div>
+      <div className="flex-1 text-left">{dictionary["Add Channel"]}</div>
     </button>
   );
 };
@@ -84,6 +89,7 @@ export const ApiModal: FC<{
   }, []);
 
   const submit = useCallback(async (data: FieldValues) => {
+    console.log('data',data)
     const add = await fetch(
       `/integrations/article/${props.identifier}/connect`,
       {
@@ -212,6 +218,9 @@ export const CustomVariables: FC<{
   identifier: string;
   gotoUrl(url: string): void;
 }> = (props) => {
+
+  
+
   const { close, gotoUrl, identifier, variables } = props;
   const modals = useModals();
   const schema = useMemo(() => {
@@ -231,6 +240,7 @@ export const CustomVariables: FC<{
       }, {}),
     });
   }, [variables]);
+  const params = useParams()
 
   const methods = useForm({
     mode: 'onChange',
@@ -246,11 +256,15 @@ export const CustomVariables: FC<{
 
   const submit = useCallback(
     async (data: FieldValues) => {
-      gotoUrl(
-        `/integrations/social/${identifier}?state=nostate&code=${Buffer.from(
-          JSON.stringify(data)
-        ).toString('base64')}`
-      );
+      console.log('${params?.lang}',`${params?.lang}`);
+      gotoUrl(`/${params.lang}/integrations/social/${identifier}?state=nostate&code=${Buffer.from(
+        JSON.stringify(data)
+      ).toString('base64')}`);
+      // gotoUrl(
+      //   `/integrations/social/${identifier}?state=nostate&code=${Buffer.from(
+      //     JSON.stringify(data)
+      //   ).toString('base64')}`
+      // );
     },
     [variables]
   );
@@ -323,6 +337,9 @@ export const AddProviderComponent: FC<{
   const router = useRouter();
   const fetch = useFetch();
   const modal = useModals();
+  const params = useParams();
+  const findLangauge = languages.find((lang) => lang.langCode === params.lang);
+ console.log('query line 224',params.lang, findLangauge)
   const getSocialLink = useCallback(
     (
         identifier: string,
@@ -337,11 +354,16 @@ export const AddProviderComponent: FC<{
       ) =>
       async () => {
         const gotoIntegration = async (externalUrl?: string) => {
+          console.log('externalUrl',externalUrl)
           const { url, err } = await (
             await fetch(
               `/integrations/social/${identifier}${
                 externalUrl ? `?externalUrl=${externalUrl}` : ``
-              }`
+              }`, {
+                headers : {
+                  "lang" : findLangauge?.langCode || "en"
+                }
+              }
             )
           ).json();
 

@@ -3,12 +3,16 @@
 import { FC } from 'react';
 import Link from 'next/link';
 import clsx from 'clsx';
-import { usePathname } from 'next/navigation';
+import { usePathname, useParams} from 'next/navigation';
 import { useUser } from '@gitroom/frontend/components/layout/user.context';
 import { useVariables } from '@gitroom/react/helpers/variable.context';
+import { useDictionary } from './lang.context';
+import { languages } from '@gitroom/frontend/app/i18n/settings';
 
 export const useMenuItems = () => {
   const { isGeneral } = useVariables();
+  // const dictionary = useDictionary("la");
+  // console.log('dictionary',dictionary)
   return [
     ...(!isGeneral
       ? [
@@ -36,7 +40,7 @@ export const useMenuItems = () => {
     ...(!isGeneral
       ? [
           {
-            name: 'Settings',
+            name:'Settings',
             icon: 'settings',
             path: '/settings',
             role: ['ADMIN', 'SUPERADMIN'],
@@ -67,10 +71,13 @@ export const useMenuItems = () => {
 
 export const TopMenu: FC = () => {
   const path = usePathname();
+  // const [local]
+  const router = useParams()
+  const findLangauge = languages.find((lang) => lang.langCode === router.lang);
   const user = useUser();
   const { billingEnabled } = useVariables();
   const menuItems = useMenuItems();
-
+  const dictionary = useDictionary("launches")
   return (
     <div className="flex flex-col h-full animate-normalFadeDown order-3 md:order-2 col-span-2 md:col-span-1">
       <ul className="gap-0 md:gap-5 flex flex-1 items-center text-[18px]">
@@ -89,7 +96,7 @@ export const TopMenu: FC = () => {
               <Link
                 prefetch={true}
                 target={item.path.indexOf('http') > -1 ? '_blank' : '_self'}
-                href={item.path}
+                href={`/${findLangauge?.langCode}${item.path}`}
                 className={clsx(
                   'flex gap-2 items-center box px-[6px] md:px-[24px] py-[8px]',
                   menuItems
@@ -105,7 +112,7 @@ export const TopMenu: FC = () => {
                     : 'text-gray'
                 )}
               >
-                <span>{item.name}</span>
+                <span>{dictionary[item.name]}</span>
               </Link>
             </li>
           ))}

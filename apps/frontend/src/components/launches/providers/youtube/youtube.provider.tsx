@@ -6,6 +6,7 @@ import { Input } from '@gitroom/react/form/input';
 import { MediumTags } from '@gitroom/frontend/components/launches/providers/medium/medium.tags';
 import { MediaComponent } from '@gitroom/frontend/components/media/media.component';
 import { Select } from '@gitroom/react/form/select';
+import { useDictionary } from '@gitroom/frontend/components/layout/lang.context';
 
 const type = [
   { label: 'Public', value: 'public' },
@@ -15,24 +16,33 @@ const type = [
 
 const YoutubeSettings: FC = () => {
   const { register, control } = useSettings();
+  const dictionary = useDictionary("launches");
   return (
     <div className="flex flex-col">
-      <Input label="Title" {...register('title')} maxLength={100} />
-      <Select label="Type" {...register('type', { value: 'public' })}>
+      <Input label={dictionary["Title"]} {...register('title')} maxLength={100} />
+      <Select
+        label={dictionary["Type"]}
+      //  label="Type"
+       {...register('type', { value: 'public' })}>
         {type.map((t) => (
           <option key={t.value} value={t.value}>
             {t.label}
           </option>
         ))}
       </Select>
-      <MediumTags label="Tags" {...register('tags')} />
+      <MediumTags 
+      // label="Tags"
+      label={dictionary["Tags"]}
+       {...register('tags')} />
       <div className="mt-[20px]">
         <MediaComponent
           type="image"
           width={1280}
           height={720}
-          label="Thumbnail"
-          description="Thumbnail picture (optional)"
+          // label="Thumbnail"
+          label={dictionary["Thumbnail"]}
+          // description="Thumbnail picture (optional)"
+          description={dictionary["Thumbnail picture (optional)"]}
           {...register('thumbnail')}
         />
       </div>

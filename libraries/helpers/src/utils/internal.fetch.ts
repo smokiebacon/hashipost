@@ -5,5 +5,6 @@ export const internalFetch = (url: string, options: RequestInit = {}) =>
   customFetch(
     { baseUrl: process.env.BACKEND_INTERNAL_URL! },
     cookies()?.get('auth')?.value!,
-    cookies()?.get('showorg')?.value!
+    cookies()?.get('showorg')?.value!,
+    cookies()?.get('lang')?.value!,
   )(url, options);

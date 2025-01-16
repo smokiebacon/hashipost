@@ -8,6 +8,7 @@ import {
   Put,
   Query,
   UseFilters,
+  Headers
 } from '@nestjs/common';
 import { ioRedis } from '@gitroom/nestjs-libraries/redis/redis.service';
 import { ConnectIntegrationDto } from '@gitroom/nestjs-libraries/dtos/integrations/connect.integration.dto';
@@ -184,8 +185,11 @@ export class IntegrationsController {
   async getIntegrationUrl(
     @Param('integration') integration: string,
     @Query('refresh') refresh: string,
-    @Query('externalUrl') externalUrl: string
+    @Query('externalUrl') externalUrl: string,
+    @Headers("lang") lang: string
+    // @Query('lang') lang : string
   ) {
+    console.log('lang 190',lang);
     if (
       !this._integrationManager
         .getAllowedSocialsIntegrations()
@@ -210,7 +214,7 @@ export class IntegrationsController {
         : undefined;
 
       const { codeVerifier, state, url } =
-        await integrationProvider.generateAuthUrl(getExternalUrl);
+        await integrationProvider.generateAuthUrl(getExternalUrl, lang);
 
       if (refresh) {
         await ioRedis.set(`refresh:${state}`, refresh, 'EX', 300);
@@ -337,7 +341,8 @@ export class IntegrationsController {
   async connectArticle(
     @GetOrgFromRequest() org: Organization,
     @Param('integration') integration: string,
-    @Body() api: ApiKeyDto
+    @Body() api: ApiKeyDto,
+    @Headers("lang") lang: string
   ) {
     if (
       !this._integrationManager
@@ -354,7 +359,7 @@ export class IntegrationsController {
     const integrationProvider =
       this._integrationManager.getArticlesIntegration(integration);
     const { id, name, token, picture, username } =
-      await integrationProvider.authenticate(api.api);
+      await integrationProvider.authenticate(api.api, lang || "en");
 
     if (!id) {
       throw new Error('Invalid api key');
@@ -383,8 +388,10 @@ export class IntegrationsController {
   async connectSocialMedia(
     @GetOrgFromRequest() org: Organization,
     @Param('integration') integration: string,
-    @Body() body: ConnectIntegrationDto
+    @Body() body: ConnectIntegrationDto,
+    @Headers("lang") lang: string
   ) {
+    console.log('lang line 394',lang)
     if (
       !this._integrationManager
         .getAllowedSocialsIntegrations()
@@ -395,7 +402,7 @@ export class IntegrationsController {
 
     const integrationProvider =
       this._integrationManager.getSocialIntegration(integration);
-
+    console.log('integrationProvider',integrationProvider)
     const getCodeVerifier = integrationProvider.customFields
       ? 'none'
       : await ioRedis.get(`login:${body.state}`);
@@ -437,8 +444,10 @@ export class IntegrationsController {
           code: body.code,
           codeVerifier: getCodeVerifier,
           refresh: body.refresh,
+          lang: lang || "en",
         },
-        details ? JSON.parse(details) : undefined
+        details ? JSON.parse(details) : undefined,
+        // lang
       );
 
       if (typeof auth === 'string') {

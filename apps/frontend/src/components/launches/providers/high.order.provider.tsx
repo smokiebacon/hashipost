@@ -38,6 +38,7 @@ import { DropFiles } from '@gitroom/frontend/components/layout/drop.files';
 import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import useSWR from 'swr';
 import { InternalChannels } from '@gitroom/frontend/components/launches/internal.channels';
+import { useDictionary } from '../../layout/lang.context';
 
 // Simple component to change back to settings on after changing tab
 export const SetTab: FC<{ changeTab: () => void }> = (props) => {
@@ -356,6 +357,7 @@ export const withProvider = function <T extends object>(
     if (!props.show) {
       return null;
     }
+    const dictionary = useDictionary("launches");
 
     return (
       <FormProvider {...form}>
@@ -370,7 +372,7 @@ export const withProvider = function <T extends object>(
                   secondary={showTab !== 0}
                   onClick={() => setShowTab(0)}
                 >
-                  Preview
+                  {dictionary['Preview']}
                 </Button>
               </div>
               {(!!SettingsComponent || !!data?.internalPlugs?.length) && (
@@ -383,7 +385,8 @@ export const withProvider = function <T extends object>(
                     secondary={showTab !== 2}
                     onClick={() => setShowTab(2)}
                   >
-                    Settings
+                    {dictionary['Settings']}
+                    {/* Settings */}
                   </Button>
                 </div>
               )}
@@ -575,7 +578,7 @@ export const withProvider = function <T extends object>(
                     />
                   )
                 ) : (
-                  <>No Content Yet</>
+                  <>{dictionary['No Content Yet']}</>
                 )}
               </IntegrationContext.Provider>
             </div>

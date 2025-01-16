@@ -27,6 +27,7 @@ import { AiImage } from '@gitroom/frontend/components/launches/ai.image';
 import Image from 'next/image';
 import { DropFiles } from '@gitroom/frontend/components/layout/drop.files';
 import { deleteDialog } from '@gitroom/react/helpers/delete.dialog';
+import { useDictionary } from '../layout/lang.context';
 
 const Polonto = dynamic(
   () => import('@gitroom/frontend/components/launches/polonto')
@@ -505,6 +506,7 @@ export const MultiMediaComponent: FC<{
     onOpen?.();
     setMediaModal(true);
   }, []);
+  const dictionary = useDictionary("launches");
 
   return (
     <>
@@ -536,7 +538,7 @@ export const MultiMediaComponent: FC<{
                   </svg>
                 </div>
                 <div className="text-[12px] font-[500] !text-current">
-                  Insert Media
+                  {dictionary['Insert Media']}
                 </div>
               </div>
             </Button>
@@ -561,7 +563,8 @@ export const MultiMediaComponent: FC<{
                   </svg>
                 </div>
                 <div className="text-[12px] font-[500] !text-current">
-                  Design Media
+                {dictionary['Design Media']}
+                  {/* Design Media */}
                 </div>
               </div>
             </Button>

@@ -10,8 +10,9 @@ import { useFetch } from '@gitroom/helpers/utils/custom.fetch';
 import { RenderAnalytics } from '@gitroom/frontend/components/platform-analytics/render.analytics';
 import { Select } from '@gitroom/react/form/select';
 import { Button } from '@gitroom/react/form/button';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useToaster } from '@gitroom/react/toaster/toaster';
+import { useDictionary } from '../layout/lang.context';
 
 const allowedIntegrations = [
   'facebook',
@@ -116,7 +117,8 @@ export const PlatformAnalytics = () => {
   if (isLoading) {
     return null;
   }
-
+  const params = useParams();
+  const dictionary = useDictionary("launches");
   if (!sortedIntegrations.length && !isLoading) {
     return (
       <div className="flex flex-col items-center mt-[100px] gap-[27px] text-center">
@@ -124,15 +126,15 @@ export const PlatformAnalytics = () => {
           <img src="/peoplemarketplace.svg" />
         </div>
         <div className="text-[48px]">
-          Can{"'"}t show analytics yet
+          {dictionary["Can't show analytics yet"]}
           <br />
-          You have to add Social Media channels
+          {dictionary["You have to add Social Media channels"]}
         </div>
-        <div className="text-[20px]">
+        {/* <div className="text-[20px]">
           Supported: {allowedIntegrations.map((p) => capitalize(p)).join(', ')}
-        </div>
-        <Button onClick={() => router.push('/launches')}>
-          Go to the calendar to add channels
+        </div> */}
+        <Button onClick={() => router.push(`${params.lang}/launches`)}>
+          {dictionary["Go to the calendar to add channels"]}
         </Button>
       </div>
     );

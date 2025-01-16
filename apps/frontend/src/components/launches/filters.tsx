@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import { useCallback } from 'react';
 import { isUSCitizen } from './helpers/isuscitizen.utils';
 import { SelectCustomer } from '@gitroom/frontend/components/launches/select.customer';
+import { useDictionary } from '../layout/lang.context';
 
 export const Filters = () => {
   const week = useCalendar();
@@ -165,6 +166,7 @@ export const Filters = () => {
     week.currentYear,
     week.currentDay,
   ]);
+  const dictionary = useDictionary("launches");
   return (
     <div className="text-textColor flex flex-col md:flex-row gap-[8px] items-center select-none">
       <div className="flex flex-grow flex-row">
@@ -184,13 +186,13 @@ export const Filters = () => {
         </div>
         <div className="w-[80px] text-center">
           {week.display === 'day'
-            ? `${dayjs()
+            ? `${dictionary[dayjs()
                 .month(week.currentMonth)
                 .week(week.currentWeek)
                 .day(week.currentDay)
-                .format('dddd')}`
+                .format('dddd')]}`
             : week.display === 'week'
-            ? `Week ${week.currentWeek}`
+            ? `${dictionary["Week"]} ${week.currentWeek}`
             : `${dayjs().month(week.currentMonth).format('MMMM')}`}
         </div>
         <div onClick={next} className="cursor-pointer">
@@ -222,7 +224,7 @@ export const Filters = () => {
           )}
           onClick={setDay}
         >
-          Day
+          {dictionary["Day"]}
         </div>
         <div
           className={clsx(
@@ -231,7 +233,7 @@ export const Filters = () => {
           )}
           onClick={setWeek}
         >
-          Week
+          {dictionary["Week"]}
         </div>
         <div
           className={clsx(
@@ -240,7 +242,8 @@ export const Filters = () => {
           )}
           onClick={setMonth}
         >
-          Month
+          {/* Month */}
+          {dictionary["Month"]}
         </div>
       </div>
     </div>

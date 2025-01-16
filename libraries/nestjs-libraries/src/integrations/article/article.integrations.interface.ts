@@ -1,6 +1,7 @@
 export interface ArticleIntegrationsInterface {
   authenticate(
-    token: string
+    token: string,
+    lang? : string,
   ): Promise<{
     id: string;
     name: string;

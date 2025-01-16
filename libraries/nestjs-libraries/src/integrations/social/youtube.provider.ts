@@ -14,12 +14,16 @@ import { SocialAbstract } from '@gitroom/nestjs-libraries/integrations/social.ab
 import * as process from 'node:process';
 import dayjs from 'dayjs';
 import { GaxiosError } from 'gaxios/build/src/common';
-
-const clientAndYoutube = () => {
+// import { cookies } from 'next/headers'
+// @ts-ignore
+// import Cookies from 'js-cookie'
+const clientAndYoutube = (lang?: string) => {
+  // const lang = Cookies.get('lang') || 'en';
+  console.log('lang line 22',lang);
   const client = new google.auth.OAuth2({
     clientId: process.env.YOUTUBE_CLIENT_ID,
     clientSecret: process.env.YOUTUBE_CLIENT_SECRET,
-    redirectUri: `${process.env.FRONTEND_URL}/integrations/social/youtube`,
+    redirectUri: `${process.env.FRONTEND_URL}/${lang || "en"}/integrations/social/youtube`,
   });
 
   const youtube = (newClient: OAuth2Client) =>
@@ -82,15 +86,17 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
     };
   }
 
-  async generateAuthUrl() {
+  async generateAuthUrl(_ : any, lang: string) {
     const state = makeId(7);
-    const { client } = clientAndYoutube();
+    const { client } = clientAndYoutube(lang);
+    // const lang = Cookies.get('lang') || "en";
+    console.log("lang line 93", lang);
     return {
       url: client.generateAuthUrl({
         access_type: 'offline',
         prompt: 'consent',
         state,
-        redirect_uri: `${process.env.FRONTEND_URL}/integrations/social/youtube`,
+        redirect_uri: `${process.env.FRONTEND_URL}/${lang}/integrations/social/youtube`,
         scope: this.scopes.slice(0),
       }),
       codeVerifier: makeId(11),
@@ -102,8 +108,9 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
     code: string;
     codeVerifier: string;
     refresh?: string;
+    lang?: string;
   }) {
-    const { client, oauth2 } = clientAndYoutube();
+    const { client, oauth2 } = clientAndYoutube(params.lang);
     const { tokens } = await client.getToken(params.code);
     client.setCredentials(tokens);
     const { scopes } = await client.getTokenInfo(tokens.access_token!);
@@ -131,7 +138,7 @@ export class YoutubeProvider extends SocialAbstract implements SocialProvider {
   async post(
     id: string,
     accessToken: string,
-    postDetails: PostDetails[]
+    postDetails: PostDetails[],
   ): Promise<PostResponse[]> {
     const [firstPost, ...comments] = postDetails;
 

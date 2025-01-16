@@ -6,6 +6,7 @@ import { useUser } from '@gitroom/frontend/components/layout/user.context';
 import { Select } from '@gitroom/react/form/select';
 import { pricing } from '@gitroom/nestjs-libraries/database/prisma/subscriptions/pricing';
 import { deleteDialog } from '@gitroom/react/helpers/delete.dialog';
+import { useDictionary } from './lang.context';
 
 export const Subscription = () => {
   const fetch = useFetch();
@@ -105,7 +106,7 @@ export const Impersonate = () => {
       []
     );
   }, [data]);
-
+  const dictionary = useDictionary("launches");
   return (
     <div className="md:px-[23px]">
       <div className="bg-forth h-[52px] flex justify-center items-center border-input border rounded-[8px]">
@@ -127,7 +128,8 @@ export const Impersonate = () => {
             ) : (
               <Input
                 autoComplete="off"
-                placeholder="Write the user details"
+              // placeholder="Write the user details"
+              placeholder={dictionary["Write the user details"]}
                 name="impersonate"
                 disableForm={true}
                 label=""

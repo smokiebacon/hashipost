@@ -5,14 +5,17 @@ export const dynamic = 'force-dynamic';
 import { internalFetch } from '@gitroom/helpers/utils/internal.fetch';
 import { redirect } from 'next/navigation';
 import { Redirect } from '@gitroom/frontend/components/layout/redirect';
+import { useDictionary } from '@gitroom/frontend/components/layout/lang.context';
+import { getDictionary } from '@gitroom/frontend/app/[lang]/dictionaries';
 
 export default async function Page({
-  params: { provider },
+  params: { provider,lang   },
   searchParams,
 }: {
-  params: { provider: string };
+  params: { provider: string, lang:'en' | 'ja' | 'zh' };
   searchParams: any;
 }) {
+  console.log('searchParams',lang);
   if (provider === 'x') {
     searchParams = {
       ...searchParams,
@@ -21,15 +24,18 @@ export default async function Page({
       refresh: searchParams.refresh || '',
     };
   }
-
+  const dictionary =await  getDictionary(lang);
   const data = await internalFetch(`/integrations/social/${provider}/connect`, {
     method: 'POST',
     body: JSON.stringify(searchParams),
+    headers : {
+      "lang" : lang || "en"
+    }
   });
 
   if (data.status === HttpStatusCode.NotAcceptable) {
     const { msg } = await data.json();
-    return redirect(`/launches?msg=${msg}`);
+    return redirect(`/${lang}/launches?msg=${msg}`);
   }
 
   if (
@@ -39,11 +45,11 @@ export default async function Page({
     return (
       <>
         <div className="mt-[50px] text-[50px]">
-          Could not add provider.
+          {dictionary.launches["Could not add provider"]}
           <br />
-          You are being redirected back
+          {dictionary.launches["You are being redirected back"]}
         </div>
-        <Redirect url="/launches" delay={3000} />
+        <Redirect url={`/${lang}/launches`} delay={3000} />
       </>
     );
   }
@@ -51,8 +57,8 @@ export default async function Page({
   const { inBetweenSteps, id } = await data.json();
 
   if (inBetweenSteps && !searchParams.refresh) {
-    return redirect(`/launches?added=${provider}&continue=${id}`);
+    return redirect(`/${lang}/launches?added=${provider}&continue=${id}`);
   }
 
-  return redirect(`/launches?added=${provider}&msg=Channel Updated`);
+  return redirect(`/${lang}/launches?added=${provider}&msg=Channel Updated`);
 }

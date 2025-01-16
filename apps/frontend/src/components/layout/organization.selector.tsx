@@ -20,6 +20,7 @@ export const OrganizationSelector = () => {
     refreshWhenHidden: false,
     revalidateOnReconnect: false,
   });
+  console.log("data", data)
 
   const current = useMemo(() => {
     return data?.find((d: any) => d.id === user?.orgId);

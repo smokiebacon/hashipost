@@ -61,7 +61,7 @@ import { useUppyUploader } from '@gitroom/frontend/components/media/new.uploader
 import { LoadingComponent } from '@gitroom/frontend/components/layout/loading';
 import { DropFiles } from '@gitroom/frontend/components/layout/drop.files';
 import { SelectCustomer } from '@gitroom/frontend/components/launches/select.customer';
-
+import { useDictionary } from '../layout/lang.context';
 function countCharacters(text: string, type: string): number {
   if (type !== 'x') {
     return text.length;
@@ -258,7 +258,7 @@ export const AddEditModal: FC<{
 
     if (
       await deleteDialog(
-        'Are you sure you want to close this modal? (all data will be lost)',
+        dictionary['Are you sure you want to close this modal? (all data will be lost)'],
         'Yes, close it!'
       )
     ) {
@@ -492,7 +492,7 @@ export const AddEditModal: FC<{
   }, [data, postFor, selectedIntegrations]);
 
   useClickOutside(askClose);
-
+  const dictionary = useDictionary("launches");
   return (
     <>
       {user?.tier?.ai && (
@@ -524,7 +524,7 @@ export const AddEditModal: FC<{
           )}
         >
           <div className="relative flex gap-[20px] flex-col flex-1 rounded-[4px] border border-customColor6 bg-sixth p-[16px] pt-0">
-            <TopTitle title={existingData?.group ? 'Edit Post' : 'Create Post'}>
+            <TopTitle title={existingData?.group ? dictionary['Edit Post'] : dictionary['Create Post']}>
               <div className="flex items-center">
                 <PostToOrganization
                   selected={existingData?.posts?.[0]?.submittedForOrderId!}
@@ -605,7 +605,7 @@ export const AddEditModal: FC<{
             />
             {!existingData.integration && !showHide.hideTopEditor ? (
               <>
-                <div>You are in global editing mode</div>
+                <div>{dictionary["You are in global editing mode"]}</div>
                 {value.map((p, index) => (
                   <Fragment key={`edit_${index}`}>
                     <div>
@@ -726,7 +726,8 @@ export const AddEditModal: FC<{
                     secondary={true}
                     disabled={selectedIntegrations.length === 0}
                   >
-                    Save as draft
+                    {/* Save as draft */}
+                    {dictionary["Save as draft"]}
                   </Button>
 
                   <Button
@@ -741,17 +742,17 @@ export const AddEditModal: FC<{
                     <div className="flex justify-center items-center gap-[5px] h-full">
                       <div className="h-full flex items-center text-white">
                         {!canSendForPublication
-                          ? 'Not matching order'
+                          ? dictionary['Not matching order']
                           : postFor
-                          ? 'Submit for order'
+                          ? dictionary['Submit for order']
                           : !existingData.integration
                           ? selectedIntegrations.length === 0
-                            ? `Select channels from the circles above`
-                            : 'Add to calendar'
+                            ? dictionary[`Select channels from the circles above`]
+                            : dictionary['Add to calendar']
                           : // @ts-ignore
                           existingData?.posts?.[0]?.state === 'DRAFT'
-                          ? 'Schedule'
-                          : 'Update'}
+                          ? dictionary['Schedule']
+                          : dictionary['Update']}
                       </div>
                       {!postFor && (
                         <div className="h-full flex items-center">
@@ -775,7 +776,8 @@ export const AddEditModal: FC<{
                                 'cursor-not-allowed pointer-events-none opacity-50'
                             )}
                           >
-                            Post now
+                            {dictionary["Post now"]}
+                            {/* Post now */}
                           </div>
                         </div>
                       )}

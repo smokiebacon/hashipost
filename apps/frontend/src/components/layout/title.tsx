@@ -3,17 +3,19 @@
 import {usePathname} from "next/navigation";
 import {useMemo} from "react";
 import { useMenuItems } from '@gitroom/frontend/components/layout/top.menu';
+import { useDictionary } from "./lang.context";
 
 export const Title = () => {
     const path = usePathname();
     const menuItems = useMenuItems();
+    const dictionary = useDictionary("launches")
     const currentTitle = useMemo(() => {
         return menuItems.find(item => path.indexOf(item.path) > -1)?.name;
     }, [path]);
 
     return (
         <div className="flex">
-            <h1 className="text-[24px] mb-5 flex-1">{currentTitle}</h1>
+            <h1 className="text-[24px] mb-5 flex-1">{currentTitle && dictionary[currentTitle]}</h1>
         </div>
     );
 }

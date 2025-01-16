@@ -3,6 +3,15 @@ import type { NextRequest } from 'next/server';
 import { getCookieUrlFromDomain } from '@gitroom/helpers/subdomain/subdomain.management';
 import { internalFetch } from '@gitroom/helpers/utils/internal.fetch';
 
+const locales = ['en', 'zh', 'ja'];
+
+function getLocale(request: NextRequest) {
+  let checkLocalInPath = locales.find((l) => request.nextUrl.pathname.startsWith(`/${l}`)|| request.nextUrl.pathname === `/${l}`) ;
+  console.log('checkLocalInPath',checkLocalInPath)
+  let langCookie =  request.cookies.get('lang')?.value;
+  console.log("langCookie", langCookie)
+  return langCookie ? langCookie : 'en';
+}
 // This function can be marked `async` if using `await` inside
 export async function middleware(request: NextRequest) {
   const nextUrl = request.nextUrl;
@@ -94,9 +103,10 @@ export async function middleware(request: NextRequest) {
     }
 
     if (nextUrl.pathname === '/') {
+      let lang = getLocale(request);
       return NextResponse.redirect(
         new URL(
-          !!process.env.IS_GENERAL ? '/launches' : `/analytics`,
+          !!process.env.IS_GENERAL ? `${lang}/launches` : `${lang}/analytics`,
           nextUrl.href
         )
       );
